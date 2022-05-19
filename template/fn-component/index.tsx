@@ -1,7 +1,7 @@
 import { useState } from "react";
 import './App.css';
 
-function App() {
+function Index() {
   const [count, handleCount] = useState(0);
   return (
     <div className="App">
@@ -10,4 +10,4 @@ function App() {
   );
 }
 
-export default App;
+export default Index;
