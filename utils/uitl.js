@@ -15,6 +15,7 @@ const compileTemplate = (templateType) => {
   const tplDir = path.resolve(absolutePath, './template');
   const files = matchDir(tplDir, regExp, true);
 
+  return files;
 }
 
 // 匹配目录中的文件
