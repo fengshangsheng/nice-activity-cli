@@ -3,7 +3,7 @@
  * */
 const {spawn} = require('child_process');
 
-const spawn = (...args) => {
+const spawnCommand = (...args) => {
   return new Promise(resolve => {
     const _process = spawn(...args);
     // 当前指令执行完毕后关闭进程监听
@@ -14,5 +14,5 @@ const spawn = (...args) => {
 }
 
 module.exports = {
-  spawn
+  spawn: spawnCommand
 }

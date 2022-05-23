@@ -105,16 +105,6 @@ const matchFile = (rootDirPath, regExp, deep = false) => {
   }
   return init(rootDirPath);
 }
-/** 将模板写入文件
- * @param writeDirPath   写入的目标目录路径
- * @param filename       写入的文件夹名称
- * @param templateString 写入模板
- */
-const writeTemplToFile = (writeDirPath, filename, templateString) => {
-  const filePath = path.resolve(writeDirPath, filename);
-  fs.writeFileSync(filePath, templateString);
-  console.log('文件创建成功:', filePath);
-}
 /** 文件名转换
  * @param filename     文件名称
  * @return {string}
@@ -125,9 +115,36 @@ const transformFileName = (filename) => {
       return 'index.tsx'
     case 'style.ejs':
       return 'style.js'
+    case 'nice.config.ejs':
+      return 'nice.config.json'
     default:
       return filename;
   }
+}
+
+const writeTemplToFile = (templatePath, targetPath, templateData) => {
+  return new Promise(resolve => {
+    ejs.renderFile(templatePath, {}, {}, (er, template) => {
+      if (er) {
+        return console.log(er);
+      }
+
+      let basename = path.basename(templatePath);
+      basename = transformFileName(basename);
+
+      fs.writeFileSync(
+        path.resolve(targetPath, basename),
+        template
+      );
+
+      resolve();
+    })
+  })
+
+
+  // const filePath = path.resolve(writeDirPath, filename);
+  // fs.writeFileSync(filePath, templateString);
+  // console.log('文件创建成功:', filePath);
 }
 /** 判断当前文件/目录是否已存在
  * uncertainPath: 需要验证的文件/目录的路径

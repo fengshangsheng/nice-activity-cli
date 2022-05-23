@@ -37,31 +37,6 @@ class Event {
   }
 }
 
-// class Store {
-//   constructor() {
-//     this.rootCwd = ''; // 项目根文件夹目录
-//     this.curCwd = '';  // 当前文件及目录
-//   }
-//
-//   setRootCwd(dir) {
-//     this.rootCwd = dir
-//   }
-//
-//   getRootCwd() {
-//     return this.rootCwd
-//   }
-//
-//   setCurCwd(dir) {
-//     this.curCwd = dir
-//   }
-//
-//   getCurCwd() {
-//     return this.curCwd
-//   }
-// }
-
-
 module.exports = {
   eventEmitter: new Event(),
-  // storeEmitter: new Store()
 };
