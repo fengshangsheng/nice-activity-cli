@@ -1,12 +1,12 @@
 import { useState } from "react";
-import './App.css';
+import { View } from '@/component/styleComponents/style';
 
 function Index() {
   const [count, handleCount] = useState(0);
   return (
-    <div className="App">
+    <View>
       <button onClick={() => handleCount(count + 1)}>add+1</button>
-    </div>
+    </View>
   );
 }
 
