@@ -88,9 +88,8 @@ const matchFile = (rootDirPath, regExp, deep = false) => {
       const isMatch = regExp.test(item);
       if (isMatch) {
         matchFile.push({
-          absolutePath: itemPath,
+          ejsTemplatePath: itemPath,
           fileBuffer: fs.readFileSync(itemPath),
-          filename: item
         })
       }
     })
@@ -121,49 +120,65 @@ const transformFileName = (filename) => {
       return filename;
   }
 }
-
-const writeTemplToFile = (templatePath, targetPath, templateData) => {
-  return new Promise(resolve => {
-    ejs.renderFile(templatePath, {}, {}, (er, template) => {
+/** 将模板写入文件
+ * @param templatePath ejs模板路径
+ * @param targetDir    输出的模板文件夹路径
+ * @param templateData 模板data
+ * */
+const writeTemplToFile = (templatePath, targetDir, templateData) => {
+  return new Promise((resolve, reject) => {
+    ejs.renderFile(templatePath, templateData, {}, (er, template) => {
       if (er) {
-        return console.log(er);
+        console.log(er);
+        return reject();
       }
 
       let basename = path.basename(templatePath);
       basename = transformFileName(basename);
 
-      fs.writeFileSync(
-        path.resolve(targetPath, basename),
-        template
-      );
+      fs.writeFileSync(path.resolve(targetDir, basename), template);
 
       resolve();
     })
   })
-
-
-  // const filePath = path.resolve(writeDirPath, filename);
-  // fs.writeFileSync(filePath, templateString);
-  // console.log('文件创建成功:', filePath);
 }
 /** 判断当前文件/目录是否已存在
  * uncertainPath: 需要验证的文件/目录的路径
  * */
 const verifyExist = (uncertainPath) => {
-  const isExist = fs.existsSync(uncertainPath)
+  return new Promise(resolve => {
+    const isExist = fs.existsSync(uncertainPath)
 
-  if (isExist) {
-    console.log('文件/目录已存在;' + uncertainPath);
-    return true
+    if (isExist) {
+      console.log('文件/目录已存在;' + uncertainPath);
+      return resolve(true)
+    }
+    return resolve(false)
+  })
+}
+
+const findConfigJSON = async (dir = process.cwd()) => {
+  const packageJSON = path.resolve(dir, 'package.json');
+  const configJSON = path.resolve(dir, 'nice.config.json');
+  const isEnd = await verifyExist(packageJSON);
+  const hasInConfig = await verifyExist(configJSON);
+
+  if (isEnd && !hasInConfig) {
+    console.log('未找到nice.config.json');
+    return false;
   }
-  return false;
-  // try {
-  //   fs.accessSync(uncertainPath, fs.constants.F_OK);
-  //   console.log('文件/目录已存在;' + uncertainPath);
-  //   return true
-  // } catch (e) {
-  //   return false;
-  // }
+  if (hasInConfig) {
+    const buffer = fs.readFileSync(configJSON);
+    return JSON.parse(buffer);
+  }
+
+  const parentDir = path.resolve(dir, './..');
+  // 如果是磁盘根目录
+  if (parentDir === dir) {
+    console.log('未找到nice.config.json');
+    return false;
+  }
+  return findConfigJSON(parentDir)
 }
 
 module.exports = {
@@ -171,5 +186,6 @@ module.exports = {
   getEjsTemplate,
   writeTemplToFile,
   verifyExist,
-  transformFileName
+  transformFileName,
+  findConfigJSON
 }

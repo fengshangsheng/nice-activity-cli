@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { observer } from "mobx-react-lite";
 import { View } from '@/component/styleComponents/style';
 
 function Index() {
   const [count, handleCount] = useState(0);
+  const store = useMobx('store');
+
   return (
     <View>
-      <button onClick={() => handleCount(count + 1)}>add+1</button>
+      <button onClick={()=> handleCount(count + 1)}>add+1</button>
     </View>
   );
 }
 
-export default Index;
+export default observer(Index)
