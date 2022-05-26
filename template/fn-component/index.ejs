@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react-lite";
-import { View } from '@/component/styleComponents/style';
+import { useMobx } from "@/utils/hooks";
+import { View } from '@/<%= stylePath %>/style';
 
 function Index() {
   const [count, handleCount] = useState(0);
